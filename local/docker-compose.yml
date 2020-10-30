@@ -1,6 +1,16 @@
 ---
 version: "3.7"
 services:
+  bandstand:
+    build: /Users/mp/devel/observability-dev/apps/automation/bandstand/
+    container_name: bandstand
+    environment:
+      APP_TOKEN: test_token
+      APP_SECRET: test_secret
+    ports:
+      - "8000:8000"
+    networks:
+      apm-pipeline-library:
   jenkins:
     build: .
     container_name: jenkins-lint
@@ -15,6 +25,10 @@ services:
         -Djenkins.install.runSetupWizard=false
         -Dhudson.model.UsageStatistics.disabled=true
     volumes:
+      - type: bind
+        source: /Users/mp/devel/apm-agent-java
+        target: /apm-agent-java
+        read_only: true
       - type: volume
         source: jenkins_home
         target: /var/jenkins_home
